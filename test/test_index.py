@@ -40,6 +40,12 @@ class TestIndex(base.TestCase):
         data = json.loads(resp.data)
         self.assertEqual(len(data), 2)
         self.assertTrue('id' in data[0])
+
+        # GET USER REPOSITORIES
+        resp = self.http_client.get('/v1/users/test/repositories/')
+        self.assertEqual(resp.status_code, 200, resp.data)
+        self.assertEqual(len(data), 2)
+
         # DELETE
         resp = self.http_client.delete('/v1/repositories/{0}/images'.format(
             repo))

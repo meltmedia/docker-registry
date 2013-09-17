@@ -32,10 +32,24 @@ def generate_headers(namespace, repository, access):
             'WWW-Authenticate': token,
             'X-Docker-Token': token}
 
+@app.route('/v1/users', methods=['GET'])
+@app.route('/v1/users/', methods=['GET'])
+@toolkit.requires_auth
+def get_users():
+    data = []
+    try:
+        path = store.users_path()
+        for user in store.list_directory(path):
+            data.append(user)
+    except IOError:
+        return toolkit.api_error('users not found', 404)
+    headers = generate_headers('', '', 'read')
+    return toolkit.response(data, 200, headers)
 
-@app.route('/v1/users', methods=['GET', 'POST'])
-@app.route('/v1/users/', methods=['GET', 'POST'])
-def get_post_users():
+
+@app.route('/v1/users', methods=['POST'])
+@app.route('/v1/users/', methods=['POST'])
+def post_users():
     if flask.request.method == 'GET':
         return toolkit.response('OK', 200)
     try:
@@ -64,6 +78,21 @@ def update_index_images(namespace, repository, data):
         store.put_content(path, json.dumps(data))
     except IOError:
         store.put_content(path, data)
+
+
+@app.route('/v1/users/<username>/repositories', methods=['GET'])
+@app.route('/v1/users/<username>/repositories/', methods=['GET'])
+@toolkit.requires_auth
+def get_user_repositories(username):
+    data = []
+    try:
+        path = store.users_repositories_path(username)
+        for repo in store.list_directory(path):
+            data.append(repo)
+    except IOError:
+        return toolkit.api_error('user not found', 404)
+    headers = generate_headers(username, '', 'read')
+    return toolkit.response(data, 200, headers)
 
 
 @app.route('/v1/repositories/<path:repository>', methods=['PUT'])

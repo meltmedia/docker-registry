@@ -43,6 +43,9 @@ def response(data=None, code=200, headers=None, raw=False):
         'Expires': '-1',
         'Content-Type': 'application/json'
     }
+    cfg = config.load()
+    if cfg.cors:
+        h.update({'Access-Control-Allow-Origin': '*'})
     if headers:
         h.update(headers)
     try:

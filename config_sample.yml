@@ -6,6 +6,7 @@ common:
     s3_bucket: REPLACEME
     # Set a random string here
     secret_key: REPLACEME
+    cors: False
 
 # This is the default configuration when no flavor is specified
 dev:

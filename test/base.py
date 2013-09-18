@@ -59,3 +59,8 @@ class TestCase(unittest.TestCase):
         self.assertEqual(resp.headers.get('x-docker-size'), str(len(layer)))
         self.assertEqual(resp.status_code, 200, resp.data)
         self.assertEqual(resp.headers['x-docker-checksum'], layer_checksum)
+
+    def test_cors(self):
+        resp = self.http_client.get('/v1/_ping')
+        self.assertEqual(resp.status_code, 200, resp.data)
+        self.assertEqual(resp.headers.get('Access-Control-Allow-Origin'), '*', resp.headers)

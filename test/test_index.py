@@ -41,15 +41,23 @@ class TestIndex(base.TestCase):
         self.assertEqual(len(data), 2)
         self.assertTrue('id' in data[0])
 
-        # GET USER REPOSITORIES
-        resp = self.http_client.get('/v1/users/test/repositories/')
-        self.assertEqual(resp.status_code, 200, resp.data)
-        self.assertEqual(len(data), 2)
-
         # DELETE
         resp = self.http_client.delete('/v1/repositories/{0}/images'.format(
             repo))
         self.assertEqual(resp.status_code, 204, resp.data)
+
+    def test_users_repository_lookup(self):
+        # GET USER
+        resp = self.http_client.get('/v1/users/')
+        self.assertEqual(resp.status_code, 200, resp.data)
+        data = json.loads(resp.data)
+        self.assertEqual(data[0], 'test', resp.data)
+
+        # GET USER REPOSITORIES
+        resp = self.http_client.get('/v1/users/test/repositories/')
+        self.assertEqual(resp.status_code, 200, resp.data)
+        data = json.loads(resp.data)
+        self.assertGreaterEqual(len(data), 1)
 
     def test_auth(self):
         repo = 'test/{0}'.format(self.gen_random_string())

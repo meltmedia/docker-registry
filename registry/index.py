@@ -39,7 +39,8 @@ def get_users():
     data = []
     try:
         path = store.users_path()
-        for user in store.list_directory(path):
+        for item in store.list_directory(path):
+            user = item.split('/').pop()
             data.append(user)
     except IOError:
         return toolkit.api_error('users not found', 404)
@@ -87,7 +88,8 @@ def get_user_repositories(username):
     data = []
     try:
         path = store.users_repositories_path(username)
-        for repo in store.list_directory(path):
+        for item in store.list_directory(path):
+            repo = item.split('/').pop()
             data.append(repo)
     except IOError:
         return toolkit.api_error('user not found', 404)
